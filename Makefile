@@ -6,7 +6,7 @@ FINALPACKAGE := 1
 include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = carplaysplit
-carplaysplit_FILES = $(wildcard src/hooks/*.xm) $(wildcard src/*.mm) $(wildcard src/crash_reporting/*.mm)
+carplaysplit_FILES = src/hooks/SpringBoard.xm src/hooks/CarPlay.xm $(wildcard src/*.mm) $(wildcard src/crash_reporting/*.mm)
 carplaysplit_CFLAGS = -Wno-unused-variable -Wno-unused-function -fno-objc-arc
 
 include $(THEOS_MAKE_PATH)/tweak.mk

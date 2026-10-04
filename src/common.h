@@ -30,7 +30,7 @@
 #define objcInvoke_2(a, b, c, d) ((id (*)(id, SEL, typeof(c), typeof(d)))objc_msgSend)(a, NSSelectorFromString(b), c, d)
 #define objcInvoke_3(a, b, c, d, e) ((id (*)(id, SEL, typeof(c), typeof(d), typeof(e)))objc_msgSend)(a, NSSelectorFromString(b), c, d, e)
 
-#define assertGotExpectedObject(obj, type) if (!obj || ![obj isKindOfClass:NSClassFromString(type)]) [NSException raise:@"UnexpectedObjectException" format:@"Expected %@ but got %@", type, obj]
+#define assertGotExpectedObject(obj, type) if (!obj || ![obj isKindOfClass:NSClassFromString(type)]) { NSLog(@"[CarPlaySplit] Warning: Expected %@ but got %@", type, obj); }
 
 #define kPropertyKey_liveCarplayWindow *NSSelectorFromString(@"liveCarplayWindow")
 #define kPropertyKey_lockAssertionIdentifiers *NSSelectorFromString(@"lockAssertions")

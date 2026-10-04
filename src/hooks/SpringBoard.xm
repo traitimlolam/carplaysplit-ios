@@ -454,6 +454,10 @@ int hook_BKSDisplayServicesSetScreenBlanked(int arg1)
         %init(SPRINGBOARD);
         // Hook BKSDisplayServicesSetScreenBlanked() - necessary for allowing animations/video when the screen is off
         void *_BKSDisplayServicesSetScreenBlanked = dlsym(dlopen(NULL, 0), "BKSDisplayServicesSetScreenBlanked");
-        MSHookFunction(_BKSDisplayServicesSetScreenBlanked, (void *)hook_BKSDisplayServicesSetScreenBlanked, (void **)&orig_BKSDisplayServicesSetScreenBlanked);
+        if (_BKSDisplayServicesSetScreenBlanked) {
+            MSHookFunction(_BKSDisplayServicesSetScreenBlanked, (void *)hook_BKSDisplayServicesSetScreenBlanked, (void **)&orig_BKSDisplayServicesSetScreenBlanked);
+        } else {
+            NSLog(@"[CarPlaySplit] BKSDisplayServicesSetScreenBlanked symbol not found, skipping hook.");
+        }
     }
 }

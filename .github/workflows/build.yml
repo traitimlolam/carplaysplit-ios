@@ -35,8 +35,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/heads/master')
         with:
-          tag_name: v1.0.1
-          name: CarPlaySplit Pro v1.0.1 (Dopamine RootHide - iPhone 13 Pro Max)
+          tag_name: v1.0.2
+          name: CarPlaySplit Pro v1.0.2 (Dopamine RootHide - iPhone 13 Pro Max)
           body: |
             ### 🚗 CarPlaySplit Pro - Tweak Chia Đôi Màn Hình CarPlay & Mở Khóa App
             - **Dòng máy:** iPhone 13 Pro Max (iOS 16.1.1 Dopamine RootHide / TrollStore).
