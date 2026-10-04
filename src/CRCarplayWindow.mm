@@ -482,7 +482,7 @@ When a CarPlay App is closed
         // todo: resign first responder (kb causes glitches on return)
 
         [self.rootWindow removeFromSuperview];
-        [self.rootWindow release];
+        self.rootWindow = nil;
         self.rootWindow = nil;
     };
 
