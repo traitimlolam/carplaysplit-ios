@@ -10,8 +10,8 @@ BUNDLE_NAME = carplayenableprefs
 carplayenableprefs_FILES = $(wildcard *.m) ../src/CRPreferences.mm
 carplayenableprefs_INSTALL_PATH = /Library/PreferenceBundles
 carplayenableprefs_FRAMEWORKS = UIKit
-carplayenableprefs_PRIVATE_FRAMEWORKS = Preferences
-carplayenableprefs_CFLAGS = -fobjc-arc -Wno-unused-variable
+carplayenableprefs_LDFLAGS = -undefined dynamic_lookup
+carplayenableprefs_CFLAGS = -fobjc-arc -Wno-unused-variable -Wno-unused-function
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 
