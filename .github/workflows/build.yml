@@ -1,0 +1,48 @@
+name: Build CarPlaySplit Pro (RootHide arm64e)
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build Tweak (arm64e)
+    runs-on: macos-14
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Theos (RootHide)
+        uses: waruhachi/theos-action@v2.4.10
+        with:
+          theos-src: 'roothide/theos'
+          theos-branch: 'master'
+          sdks-src: 'theos/sdks'
+          sdks-branch: 'master'
+
+      - name: Build RootHide Tweak
+        run: |
+          make clean package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=roothide
+          mkdir -p output
+          cp packages/*.deb output/CarPlaySplit_roothide.deb || cp packages/* output/
+          ls -la output/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/heads/master')
+        with:
+          tag_name: v1.0.0
+          name: CarPlaySplit Pro v1.0.0 (Dopamine RootHide - iPhone 13 Pro Max)
+          body: |
+            ### 🚗 CarPlaySplit Pro - Tweak Chia Đôi Màn Hình CarPlay & Mở Khóa App
+            - **Dòng máy:** iPhone 13 Pro Max (iOS 16.1.1 Dopamine RootHide / TrollStore).
+            - **Kiến trúc:** `iphoneos-arm64e` (RootHide chuẩn).
+            - **Tính năng nổi bật:**
+              * Chia đôi màn hình CarPlay (Split-Screen 50/50 & 70/30) chạy song song 2 ứng dụng cạnh nhau.
+              * Mở khóa mọi ứng dụng iPhone lên màn hình xe hơi (Google Maps, YouTube, Zalo, VTVGo...).
+              * Nút đảo vị trí (Swap) và chuyển đổi giao diện trực tiếp trên thanh Dock xe hơi.
+          files: output/*
