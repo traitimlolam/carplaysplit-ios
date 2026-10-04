@@ -7,7 +7,7 @@
 {
     if ((self = [super init]))
     {
-        [self setTitle:@"CarPlayEnable Preferences"];
+        [self setTitle:@"CarPlaySplit Pro"];
         _rootTable = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height) style:UITableViewStyleGrouped];
         [_rootTable setDelegate:self];
         [_rootTable setDataSource:self];

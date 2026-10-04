@@ -1,3 +1,18 @@
 #!/bin/sh
 
-killall -9 CarPlay || true
+# Tat tien trinh am tham, khong in loi do ra Sileo
+killall -9 CarPlay >/dev/null 2>&1 || true
+killall -9 Preferences >/dev/null 2>&1 || true
+
+# Respring SpringBoard de nap tweak vao he thong
+if [ -x "/var/jb/usr/bin/sbreload" ]; then
+    /var/jb/usr/bin/sbreload >/dev/null 2>&1 || true
+elif [ -x "/usr/bin/sbreload" ]; then
+    /usr/bin/sbreload >/dev/null 2>&1 || true
+elif [ -x "/var/jb/usr/bin/killall" ]; then
+    /var/jb/usr/bin/killall -9 SpringBoard >/dev/null 2>&1 || true
+else
+    killall -9 SpringBoard >/dev/null 2>&1 || true
+fi
+
+exit 0

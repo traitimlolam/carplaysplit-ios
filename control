@@ -1,7 +1,7 @@
 Package: com.tronghieu.carplaysplit
 Name: CarPlaySplit Pro
 Depends: firmware (>= 15.0), mobilesubstrate, preferenceloader
-Version: 1.0.0
+Version: 1.0.1
 Architecture: iphoneos-arm64e
 Description: Tweak chia đôi màn hình CarPlay (Split-Screen 50/50 & 70/30) & mở khóa chạy song song mọi app trên xe hơi cho iPhone 13 Pro Max (iOS 16.1.1 RootHide)
 Maintainer: Nguyễn Trọng Hiếu <mr.tronghieu.nguyen@gmail.com>
