@@ -23,14 +23,30 @@ Invoked when the device is being locked while applications are running/active
     BOOL shouldBackground = %orig;
     if (shouldBackground)
     {
-        // This app is going to be backgrounded, If there is an active lock-prevention assertion for it, prevent the backgrounding.
-        // This keeps CarPlay apps interactive when the device locks
-        NSString *sceneAppBundleID = objcInvoke(objcInvoke(objcInvoke(arg2, @"client"), @"process"), @"bundleIdentifier");
         NSArray *lockAssertions = objc_getAssociatedObject([UIApplication sharedApplication], &kPropertyKey_lockAssertionIdentifiers);
-        if ([lockAssertions containsObject:sceneAppBundleID])
+        if (lockAssertions && [lockAssertions count] > 0)
         {
-            LOG_LIFECYCLE_EVENT;
-            shouldBackground = NO;
+            @try
+            {
+                id client = objcInvoke(arg2, @"client");
+                if (client && [client respondsToSelector:NSSelectorFromString(@"process")])
+                {
+                    id process = objcInvoke(client, @"process");
+                    if (process && [process respondsToSelector:NSSelectorFromString(@"bundleIdentifier")])
+                    {
+                        NSString *sceneAppBundleID = objcInvoke(process, @"bundleIdentifier");
+                        if (sceneAppBundleID && [lockAssertions containsObject:sceneAppBundleID])
+                        {
+                            LOG_LIFECYCLE_EVENT;
+                            shouldBackground = NO;
+                        }
+                    }
+                }
+            }
+            @catch (NSException *exception)
+            {
+                NSLog(@"[CarPlaySplit] Exception in SBSuspendedUnderLockManager: %@", exception);
+            }
         }
     }
 
@@ -185,18 +201,35 @@ Use this to prevent the App from going to sleep when other applications are laun
 */
 - (void)updateSettings:(id)arg1 withTransitionContext:(id)arg2 completion:(void *)arg3
 {
-    id sceneClient = objcInvoke(self, @"client");
-    if ([sceneClient respondsToSelector:NSSelectorFromString(@"process")])
+    // Fast path: if no CarPlay app is actively hosted, bypass immediately
+    NSArray *lockAssertions = objc_getAssociatedObject([UIApplication sharedApplication], &kPropertyKey_lockAssertionIdentifiers);
+    if (!lockAssertions || [lockAssertions count] == 0)
     {
-        NSString *sceneAppBundleID = objcInvoke(objcInvoke(sceneClient, @"process"), @"bundleIdentifier");
-        NSArray *lockAssertions = objc_getAssociatedObject([UIApplication sharedApplication], &kPropertyKey_lockAssertionIdentifiers);
-        if ([lockAssertions containsObject:sceneAppBundleID])
+        return %orig;
+    }
+
+    @try
+    {
+        id sceneClient = objcInvoke(self, @"client");
+        if (sceneClient && [sceneClient respondsToSelector:NSSelectorFromString(@"process")])
         {
-            if (objcInvokeT(arg1, @"isForeground", BOOL) == NO)
+            id process = objcInvoke(sceneClient, @"process");
+            if (process && [process respondsToSelector:NSSelectorFromString(@"bundleIdentifier")])
             {
-                return;
+                NSString *sceneAppBundleID = objcInvoke(process, @"bundleIdentifier");
+                if (sceneAppBundleID && [lockAssertions containsObject:sceneAppBundleID])
+                {
+                    if ([arg1 respondsToSelector:NSSelectorFromString(@"isForeground")] && objcInvokeT(arg1, @"isForeground", BOOL) == NO)
+                    {
+                        return;
+                    }
+                }
             }
         }
+    }
+    @catch (NSException *exception)
+    {
+        NSLog(@"[CarPlaySplit] Exception in FBScene updateSettings: %@", exception);
     }
 
     %orig;
